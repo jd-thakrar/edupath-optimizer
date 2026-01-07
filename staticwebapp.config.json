@@ -1,0 +1,35 @@
+# Azure Static Web Apps Configuration
+# Deploys frontend to Azure and backend to Azure Functions
+
+version: 1
+
+build:
+  appLocation: "/frontend"
+  apiLocation: "/backend"
+  outputLocation: "."
+  
+appBuildCommands:
+  - echo "Frontend is static HTML/JS"
+  
+apiBuildCommands:
+  - pip install -r requirements.txt
+  - python backend/train_model.py
+  
+routes:
+  - route: "/api/*"
+    allowedRoles:
+      - anonymous
+  
+  - route: "/*"
+    serve: "/index.html"
+    statusCode: 200
+  
+navigationFallback:
+  rewrite: "/index.html"
+  exclude:
+    - "/*.{css,js,png,jpg,svg}"
+    - "/api/*"
+
+globalHeaders:
+  "Cross-Origin-Embedder-Policy": "credentialless"
+  "Cross-Origin-Opener-Policy": "same-origin"

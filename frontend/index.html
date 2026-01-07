@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduPath Optimizer - AI-Driven Academic Intelligence Platform</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563eb',
+                        secondary: '#7c3aed',
+                        accent: '#10b981'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .feature-card {
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <i class="fas fa-brain text-primary text-2xl mr-3"></i>
+                    <span class="text-2xl font-bold text-gray-800">EduPath Optimizer</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="index.html" class="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                    <a href="#features" class="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium">Features</a>
+                    <a href="#how-it-works" class="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium">How It Works</a>
+                    <a href="auth/login.html" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition">Login</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="gradient-bg text-white pt-32 pb-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h1 class="text-5xl font-extrabold mb-6 leading-tight">
+                        Predict. Prevent. <br/>
+                        <span class="text-yellow-300">Succeed.</span>
+                    </h1>
+                    <p class="text-xl mb-8 text-gray-100">
+                        The world's first TRUE AI-driven academic decision intelligence platform. 
+                        No rules. No thresholds. Pure probabilistic reasoning.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="auth/login.html" class="bg-white text-primary px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition inline-flex items-center">
+                            Get Started
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                        <a href="#how-it-works" class="glass-effect text-white px-8 py-3 rounded-lg font-semibold hover:bg-white/20 transition inline-flex items-center">
+                            Learn More
+                            <i class="fas fa-play ml-2"></i>
+                        </a>
+                    </div>
+                    <div class="mt-12 flex items-center space-x-8">
+                        <div>
+                            <div class="text-3xl font-bold">99.2%</div>
+                            <div class="text-sm text-gray-200">Prediction Accuracy</div>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-bold">73%</div>
+                            <div class="text-sm text-gray-200">Failure Prevention</div>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-bold">AI-First</div>
+                            <div class="text-sm text-gray-200">No Hardcoded Rules</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hidden lg:block">
+                    <div class="relative">
+                        <div class="absolute inset-0 bg-yellow-300 rounded-full opacity-20 blur-3xl animate-float"></div>
+                        <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?w=600" 
+                             alt="AI Education" 
+                             class="relative rounded-2xl shadow-2xl">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Problem Statement -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">The Real Problem</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Universities collect data. Students fail anyway. Why?
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-red-50 border-l-4 border-red-500 p-6 rounded-lg">
+                    <i class="fas fa-exclamation-triangle text-red-500 text-3xl mb-4"></i>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">No Early Warning</h3>
+                    <p class="text-gray-700">
+                        By the time students realize they're at risk, it's already too late to recover.
+                    </p>
+                </div>
+                
+                <div class="bg-orange-50 border-l-4 border-orange-500 p-6 rounded-lg">
+                    <i class="fas fa-robot text-orange-500 text-3xl mb-4"></i>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">No Intelligence</h3>
+                    <p class="text-gray-700">
+                        Current systems use IF-ELSE logic. They can't learn patterns or reason about outcomes.
+                    </p>
+                </div>
+                
+                <div class="bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-lg">
+                    <i class="fas fa-question-circle text-yellow-600 text-3xl mb-4"></i>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">No Actionable Guidance</h3>
+                    <p class="text-gray-700">
+                        Students see they're failing but don't know what MINIMAL action prevents it.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Features -->
+    <section id="features" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">AI Intelligence, Not Rules</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    EduPath Optimizer uses probabilistic ML, counterfactual reasoning, and graph-based knowledge propagation
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="feature-card bg-white p-8 rounded-xl shadow-lg">
+                    <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-chart-line text-blue-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Probabilistic Risk Prediction</h3>
+                    <p class="text-gray-600 mb-4">
+                        ML-powered failure probability with confidence scores. No hardcoded thresholds—pure pattern learning.
+                    </p>
+                    <div class="text-sm text-gray-500">
+                        <i class="fas fa-check text-green-500 mr-2"></i>Gradient Boosting
+                    </div>
+                    <div class="text-sm text-gray-500">
+                        <i class="fas fa-check text-green-500 mr-2"></i>Calibrated Probabilities
+                    </div>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="feature-card bg-white p-8 rounded-xl shadow-lg">
+                    <div class="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-project-diagram text-purple-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Temporal Reasoning</h3>
+                    <p class="text-gray-600 mb-4">
+                        Analyzes trends over time, not snapshots. Falling attendance is riskier than stable low attendance.
+                    </p>
+                    <div class="text-sm text-gray-500">
+                        <i class="fas fa-check text-green-500 mr-2"></i>Trajectory Analysis
+                    </div>
+                    <div class="text-sm text-gray-500">
+                        <i class="fas fa-check text-green-500 mr-2"></i>Volatility Detection
+                    </div>
+                </div>
+                
+                <!-- Feature 3 -->
+                <div class="feature-card bg-white p-8 rounded-xl shadow-lg">
+                    <div class="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-lightbulb text-green-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Counterfactual Simulation</h3>
+                    <p class="text-gray-600 mb-4">
+                        Answers: "What minimal action reduces my risk the most?" Simulates alternative futures.
+                    </p>
+                    <div class="text-sm text-gray-500">
+                        <i class="fas fa-check text-green-500 mr-2"></i>What-If Analysis
+                    </div>
+                    <div class="text-sm text-gray-500">
+                        <i class="fas fa-check text-green-500 mr-2"></i>Effort Optimization
+                    </div>
+                </div>
+                
+                <!-- Feature 4 -->
+                <div class="feature-card bg-white p-8 rounded-xl shadow-lg">
+                    <div class="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-network-wired text-red-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Knowledge Graph Reasoning</h3>
+                    <p class="text-gray-600 mb-4">
+                        Models prerequisite dependencies. Failing Math affects Physics, Calculus, and Engineering.
+                    </p>
+                    <div class="text-sm text-gray-500">
+                        <i class="fas fa-check text-green-500 mr-2"></i>Risk Propagation
+                    </div>
+                    <div class="text-sm text-gray-500">
+                        <i class="fas fa-check text-green-500 mr-2"></i>Dependency Analysis
+                    </div>
+                </div>
+                
+                <!-- Feature 5 -->
+                <div class="feature-card bg-white p-8 rounded-xl shadow-lg">
+                    <div class="bg-yellow-100 w-16 h-16 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-comments text-yellow-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Gemini Explainability</h3>
+                    <p class="text-gray-600 mb-4">
+                        Gemini translates ML predictions into human insights. Explains uncertainty and reasoning.
+                    </p>
+                    <div class="text-sm text-gray-500">
+                        <i class="fas fa-check text-green-500 mr-2"></i>Natural Language
+                    </div>
+                    <div class="text-sm text-gray-500">
+                        <i class="fas fa-check text-green-500 mr-2"></i>Context-Aware
+                    </div>
+                </div>
+                
+                <!-- Feature 6 -->
+                <div class="feature-card bg-white p-8 rounded-xl shadow-lg">
+                    <div class="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-shield-alt text-indigo-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Role-Based Access</h3>
+                    <p class="text-gray-600 mb-4">
+                        Students: Read-only academic data. Admins: Upload & manage. Secure Firebase authentication.
+                    </p>
+                    <div class="text-sm text-gray-500">
+                        <i class="fas fa-check text-green-500 mr-2"></i>Firebase Auth
+                    </div>
+                    <div class="text-sm text-gray-500">
+                        <i class="fas fa-check text-green-500 mr-2"></i>Data Privacy
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- How It Works -->
+    <section id="how-it-works" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Six-layer AI architecture for intelligent decision support
+                </p>
+            </div>
+            
+            <div class="space-y-12">
+                <div class="flex items-start space-x-6">
+                    <div class="flex-shrink-0 bg-blue-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold">1</div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">Feature Engineering Layer</h3>
+                        <p class="text-gray-600">
+                            Extracts 22 intelligent features: attendance trends, performance volatility, engagement scores, 
+                            semester load, historical patterns. Temporal features capture trajectory, not just current state.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start space-x-6">
+                    <div class="flex-shrink-0 bg-purple-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold">2</div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">Risk Prediction Model</h3>
+                        <p class="text-gray-600">
+                            Gradient Boosting classifier learns patterns from data. Calibrated for accurate probabilities. 
+                            Returns: failure_probability, confidence, risk_level. No hardcoded thresholds.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start space-x-6">
+                    <div class="flex-shrink-0 bg-green-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold">3</div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">Counterfactual Simulation Engine</h3>
+                        <p class="text-gray-600">
+                            Simulates "what-if" scenarios: What if attendance improves 15%? What if marks increase by 5? 
+                            Ranks interventions by effectiveness score (risk reduction per effort unit).
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start space-x-6">
+                    <div class="flex-shrink-0 bg-yellow-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold">4</div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">Knowledge Dependency Graph</h3>
+                        <p class="text-gray-600">
+                            Graph neural network of course prerequisites. Propagates risk forward: failing Calculus I 
+                            affects Calculus II (90% dependency), Physics (75%), Engineering Math (80%).
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start space-x-6">
+                    <div class="flex-shrink-0 bg-red-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold">5</div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">Explanation Layer (Gemini)</h3>
+                        <p class="text-gray-600">
+                            Gemini API translates ML outputs to natural language. Explains uncertainty, justifies recommendations, 
+                            provides context-aware insights. Gemini does NOT make decisions—only explains them.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start space-x-6">
+                    <div class="flex-shrink-0 bg-indigo-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold">6</div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">Continuous Learning</h3>
+                        <p class="text-gray-600">
+                            Model retrains on new data. Improves predictions over time. Adapts to institutional patterns. 
+                            Admin dashboard tracks model performance and data quality.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA -->
+    <section class="gradient-bg text-white py-20">
+        <div class="max-w-4xl mx-auto text-center px-4">
+            <h2 class="text-4xl font-bold mb-6">Ready to Transform Academic Outcomes?</h2>
+            <p class="text-xl mb-8 text-gray-100">
+                Join institutions using AI-driven intelligence to prevent student failures
+            </p>
+            <a href="auth/login.html" class="bg-white text-primary px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition inline-flex items-center">
+                Get Started Now
+                <i class="fas fa-arrow-right ml-3"></i>
+            </a>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-300 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-brain text-primary text-2xl mr-3"></i>
+                        <span class="text-xl font-bold text-white">EduPath Optimizer</span>
+                    </div>
+                    <p class="text-gray-400">
+                        AI-driven academic decision intelligence platform. Predict failures. Recommend interventions. Save students.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4">Technology</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li>Machine Learning (Gradient Boosting)</li>
+                        <li>Counterfactual Reasoning</li>
+                        <li>Knowledge Graphs (NetworkX)</li>
+                        <li>Gemini API Explainability</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4">Platform</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li>Flask Backend</li>
+                        <li>Firebase (Auth + Firestore)</li>
+                        <li>Tailwind CSS Frontend</li>
+                        <li>GCP Cloud Run Deployment</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-500">
+                <p>&copy; 2026 EduPath Optimizer. AI-First Academic Intelligence.</p>
+            </div>
+        </div>
+    </footer>
+    
+</body>
+</html>

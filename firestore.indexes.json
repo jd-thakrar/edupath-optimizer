@@ -1,0 +1,21 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "students",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath": "semester", "order": "ASCENDING"},
+        {"fieldPath": "risk_level", "order": "ASCENDING"}
+      ]
+    },
+    {
+      "collectionGroup": "predictions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath": "student_id", "order": "ASCENDING"},
+        {"fieldPath": "timestamp", "order": "DESCENDING"}
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

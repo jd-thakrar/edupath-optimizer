@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - EduPath Optimizer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <i class="fas fa-brain text-blue-600 text-2xl mr-3"></i>
+                    <span class="text-xl font-bold text-gray-800">EduPath Optimizer</span>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <a href="dashboard.html" class="text-blue-600 font-medium">Dashboard</a>
+                    <a href="insights.html" class="text-gray-700 hover:text-blue-600">AI Insights</a>
+                    <button onclick="refreshData()" class="text-gray-700 hover:text-green-600 transition">
+                        <i class="fas fa-sync-alt mr-2"></i>New Student
+                    </button>
+                    <button onclick="logout()" class="text-gray-700 hover:text-red-600">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Success Notification -->
+    <div id="successNotification" class="hidden fixed top-20 right-4 bg-green-500 text-white px-6 py-4 rounded-lg shadow-2xl z-50 transform transition-all duration-300">
+        <div class="flex items-center">
+            <i class="fas fa-check-circle text-2xl mr-3"></i>
+            <div>
+                <div class="font-bold">New Student Loaded!</div>
+                <div class="text-sm opacity-90" id="notificationText"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Welcome Section -->
+        <div class="mb-8 flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">
+                    Welcome back, <span id="studentName">Student</span>
+                    <span id="studentId" class="text-sm text-gray-500 ml-2"></span>
+                </h1>
+                <p class="text-gray-600">Here's your academic intelligence overview</p>
+            </div>
+            <div class="text-right">
+                <button onclick="refreshData()" class="bg-green-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-600 transition shadow-lg">
+                    <i class="fas fa-random mr-2"></i>Try Different Student
+                </button>
+            </div>
+        </div>
+        
+        <!-- Risk Score Card (Main) -->
+        <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl shadow-xl p-8 mb-8 text-white">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="col-span-2">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-shield-alt text-4xl mr-4 opacity-80"></i>
+                        <div>
+                            <h2 class="text-2xl font-bold">Your Risk Assessment</h2>
+                            <p class="text-blue-100">Probabilistic ML Prediction</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4 mt-6">
+                        <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                            <div class="text-3xl font-bold" id="failureProbability">--</div>
+                            <div class="text-sm text-blue-100">Failure Probability</div>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                            <div class="text-3xl font-bold" id="confidenceScore">--</div>
+                            <div class="text-sm text-blue-100">Prediction Confidence</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 flex items-center">
+                        <div class="flex-1 bg-white/20 rounded-full h-3">
+                            <div id="riskBar" class="h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+                        </div>
+                        <span id="riskLabel" class="ml-4 font-semibold">LOADING...</span>
+                    </div>
+                </div>
+                
+                <div class="flex items-center justify-center">
+                    <div class="text-center">
+                        <div class="relative inline-flex items-center justify-center w-40 h-40">
+                            <svg class="transform -rotate-90 w-40 h-40">
+                                <circle cx="80" cy="80" r="70" stroke="rgba(255,255,255,0.2)" stroke-width="12" fill="none" />
+                                <circle id="riskCircle" cx="80" cy="80" r="70" stroke="white" stroke-width="12" fill="none"
+                                        stroke-dasharray="439.6" stroke-dashoffset="439.6" stroke-linecap="round" />
+                            </svg>
+                            <div class="absolute">
+                                <div id="riskPercentage" class="text-4xl font-bold">0%</div>
+                                <div class="text-sm text-blue-100">Risk</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- AI Explanation -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <div class="flex items-start">
+                <div class="flex-shrink-0 bg-purple-100 rounded-full p-3 mr-4">
+                    <i class="fas fa-robot text-purple-600 text-2xl"></i>
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">AI Explanation</h3>
+                    <div id="aiExplanation" class="text-gray-700 leading-relaxed">
+                        <div class="animate-pulse">Loading AI analysis...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Stats Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-xl shadow p-6">
+                <div class="flex items-center justify-between mb-2">
+                    <i class="fas fa-calendar-check text-blue-600 text-2xl"></i>
+                    <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">Current</span>
+                </div>
+                <div class="text-2xl font-bold text-gray-900" id="currentAttendance">--</div>
+                <div class="text-sm text-gray-600">Current Attendance</div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow p-6">
+                <div class="flex items-center justify-between mb-2">
+                    <i class="fas fa-chart-line text-green-600 text-2xl"></i>
+                    <span id="trendBadge" class="text-xs px-2 py-1 rounded-full">--</span>
+                </div>
+                <div class="text-2xl font-bold text-gray-900" id="attendanceTrend">--</div>
+                <div class="text-sm text-gray-600">Attendance Trend</div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow p-6">
+                <div class="flex items-center justify-between mb-2">
+                    <i class="fas fa-graduation-cap text-purple-600 text-2xl"></i>
+                </div>
+                <div class="text-2xl font-bold text-gray-900" id="avgMarks">--</div>
+                <div class="text-sm text-gray-600">Average Marks</div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow p-6">
+                <div class="flex items-center justify-between mb-2">
+                    <i class="fas fa-book text-orange-600 text-2xl"></i>
+                </div>
+                <div class="text-2xl font-bold text-gray-900" id="subjectCount">--</div>
+                <div class="text-sm text-gray-600">Current Subjects</div>
+            </div>
+        </div>
+        
+        <!-- Charts Row -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Attendance Trend Chart -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-lg font-bold text-gray-900 mb-4">Attendance Trajectory</h3>
+                <canvas id="attendanceChart"></canvas>
+            </div>
+            
+            <!-- Performance Chart -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-lg font-bold text-gray-900 mb-4">Performance Distribution</h3>
+                <canvas id="performanceChart"></canvas>
+            </div>
+        </div>
+        
+        <!-- Top Contributing Factors -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <h3 class="text-xl font-bold text-gray-900 mb-4">Top Risk Factors</h3>
+            <div id="riskFactors" class="space-y-3">
+                <div class="animate-pulse">Loading feature importance...</div>
+            </div>
+        </div>
+        
+        <!-- Future Course Risks -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Impact on Future Courses</h3>
+            <p class="text-gray-600 mb-4">Knowledge graph propagation - how current risks affect downstream courses</p>
+            <div id="futureCourseRisks" class="space-y-3">
+                <div class="animate-pulse">Analyzing prerequisite dependencies...</div>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="bg-gradient-to-r from-green-500 to-blue-500 rounded-xl shadow-lg p-6 text-white">
+            <h3 class="text-2xl font-bold mb-4">Ready to Improve?</h3>
+            <p class="mb-6 text-green-50">Get personalized AI recommendations to reduce your failure risk</p>
+            <a href="insights.html" class="inline-block bg-white text-green-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition">
+                View AI Recommendations
+                <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+        
+    </div>
+    
+    <script>
+        const API_BASE_URL = 'http://localhost:5000/api';
+        
+        // Demo data (fallback)
+        const demoData = {
+            student: {
+                id: 'STU0001',
+                name: 'Alex Johnson',
+                semester: 5,
+                enrollment_id: 'EN2021001'
+            },
+            risk_assessment: {
+                failure_probability: 0.38,
+                confidence: 0.82,
+                risk_level: 'medium',
+                prediction: 0
+            },
+            personalized_summary: 'Based on analysis of your academic patterns, your current trajectory shows moderate risk. Your attendance trend has declined slightly over recent weeks, and performance volatility has increased. However, targeted interventions in key areas can significantly improve outcomes. Focus on consistency rather than dramatic changes.',
+            recent_attendance: [78, 76, 72, 70, 68],
+            recent_performance: [
+                { subject: 'Data Structures', latest_marks: 15 },
+                { subject: 'Algorithms', latest_marks: 13 },
+                { subject: 'Database Systems', latest_marks: 16 },
+                { subject: 'Web Development', latest_marks: 14 }
+            ],
+            top_contributing_factors: [
+                { feature: 'attendance_trend', importance: 0.18 },
+                { feature: 'marks_volatility', importance: 0.15 },
+                { feature: 'attendance_decline', importance: 0.12 },
+                { feature: 'recent_performance', importance: 0.11 },
+                { feature: 'engagement_score', importance: 0.09 }
+            ],
+            future_course_risks: [
+                { course: 'Advanced Algorithms', risk: 0.31 },
+                { course: 'Machine Learning', risk: 0.28 },
+                { course: 'System Design', risk: 0.24 }
+            ]
+        };
+        
+        // Chart instances for cleanup
+        let attendanceChartInstance = null;
+        let performanceChartInstance = null;
+        
+        // Load dashboard data
+        async function loadDashboard() {
+            // Show loading indicator
+            document.body.style.cursor = 'wait';
+            
+            try {
+                console.log('🔄 Requesting NEW random student from backend...');
+                
+                // DON'T send any student_id - let backend pick randomly
+                const response = await fetch(`${API_BASE_URL}/student/risk-assessment?t=${Date.now()}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        random: true // Signal to backend we want random
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('API request failed');
+                }
+                
+                const apiData = await response.json();
+                console.log('✅ Received:', apiData.student_name, '-', apiData.student_id, '-', apiData.archetype);
+                
+                // Store student data in sessionStorage for consistency across pages
+                sessionStorage.setItem('currentStudent', JSON.stringify({
+                    id: apiData.student_id,
+                    name: apiData.student_name,
+                    archetype: apiData.archetype
+                }));
+                
+                // Transform API response to dashboard format
+                const data = {
+                    student: {
+                        id: apiData.student_id,
+                        name: apiData.student_name || 'Demo Student',
+                        archetype: apiData.archetype || 'stable',
+                        semester: 5,
+                        enrollment_id: apiData.student_id
+                    },
+                    risk_assessment: apiData.risk_assessment,
+                    personalized_summary: apiData.explanation || demoData.personalized_summary,
+                    recent_attendance: apiData.recent_attendance || demoData.recent_attendance,
+                    recent_performance: apiData.recent_performance || demoData.recent_performance,
+                    top_contributing_factors: apiData.top_contributing_factors || demoData.top_contributing_factors,
+                    future_course_risks: apiData.future_course_risks || demoData.future_course_risks
+                };
+                
+                updateUI(data);
+                
+                // Show success notification
+                showNotification(data.student.name, data.student.archetype, data.risk_assessment.risk_level);
+            } catch (error) {
+                console.error('❌ Error loading dashboard:', error);
+                console.log('Falling back to demo data');
+                updateUI(demoData);
+            } finally {
+                document.body.style.cursor = 'default';
+            }
+        }
+        
+        function showNotification(name, archetype, riskLevel) {
+            const notification = document.getElementById('successNotification');
+            const notificationText = document.getElementById('notificationText');
+            
+            const archetypeEmoji = {
+                'excelling': '🌟',
+                'stable': '📊',
+                'declining': '📉',
+                'struggling': '⚠️',
+                'recovering': '📈'
+            };
+            
+            notificationText.textContent = `${name} (${archetypeEmoji[archetype]} ${archetype.charAt(0).toUpperCase() + archetype.slice(1)}) - ${riskLevel.toUpperCase()} Risk`;
+            
+            notification.classList.remove('hidden');
+            
+            setTimeout(() => {
+                notification.classList.add('hidden');
+            }, 4000);
+        }
+        
+        function updateUI(data) {
+            // Student info
+            document.getElementById('studentName').textContent = data.student.name;
+            
+            // Create archetype badge
+            const archetypes = {
+                'excelling': { color: 'bg-green-500', icon: '🌟', text: 'Excelling' },
+                'stable': { color: 'bg-blue-500', icon: '📊', text: 'Stable' },
+                'declining': { color: 'bg-orange-500', icon: '📉', text: 'Declining' },
+                'struggling': { color: 'bg-red-500', icon: '⚠️', text: 'Struggling' },
+                'recovering': { color: 'bg-purple-500', icon: '📈', text: 'Recovering' }
+            };
+            const archetype = archetypes[data.student.archetype] || archetypes['stable'];
+            
+            document.getElementById('studentId').innerHTML = `
+                (${data.student.id}) 
+                <span class="${archetype.color} text-white px-3 py-1 rounded-full text-xs font-semibold ml-2">
+                    ${archetype.icon} ${archetype.text}
+                </span>
+            `;
+            
+            // Risk metrics
+            const risk = data.risk_assessment;
+            const riskPercent = Math.round(risk.failure_probability * 100);
+            const confPercent = Math.round(risk.confidence * 100);
+            
+            document.getElementById('failureProbability').textContent = `${riskPercent}%`;
+            document.getElementById('confidenceScore').textContent = `${confPercent}%`;
+            document.getElementById('riskPercentage').textContent = `${riskPercent}%`;
+            
+            // Risk bar and label
+            const riskBar = document.getElementById('riskBar');
+            const riskLabel = document.getElementById('riskLabel');
+            
+            if (risk.risk_level === 'high') {
+                riskBar.className = 'h-3 rounded-full bg-red-500 transition-all duration-500';
+                riskLabel.textContent = 'HIGH RISK';
+                riskLabel.className = 'ml-4 font-semibold text-red-200';
+            } else if (risk.risk_level === 'medium') {
+                riskBar.className = 'h-3 rounded-full bg-yellow-400 transition-all duration-500';
+                riskLabel.textContent = 'MEDIUM RISK';
+                riskLabel.className = 'ml-4 font-semibold text-yellow-200';
+            } else {
+                riskBar.className = 'h-3 rounded-full bg-green-400 transition-all duration-500';
+                riskLabel.textContent = 'LOW RISK';
+                riskLabel.className = 'ml-4 font-semibold text-green-200';
+            }
+            
+            setTimeout(() => {
+                riskBar.style.width = `${riskPercent}%`;
+                
+                // Animate circle
+                const circle = document.getElementById('riskCircle');
+                const circumference = 439.6;
+                const offset = circumference - (riskPercent / 100) * circumference;
+                circle.style.strokeDashoffset = offset;
+            }, 100);
+            
+            // AI Explanation
+            document.getElementById('aiExplanation').textContent = data.personalized_summary;
+            
+            // Quick stats
+            const lastAttendance = data.recent_attendance[data.recent_attendance.length - 1];
+            document.getElementById('currentAttendance').textContent = `${lastAttendance}%`;
+            
+            const firstAttendance = data.recent_attendance[0];
+            const trend = lastAttendance - firstAttendance;
+            const trendElem = document.getElementById('attendanceTrend');
+            const trendBadge = document.getElementById('trendBadge');
+            
+            if (trend > 0) {
+                trendElem.textContent = `+${trend}%`;
+                trendBadge.textContent = '↑ Improving';
+                trendBadge.className = 'text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full';
+            } else {
+                trendElem.textContent = `${trend}%`;
+                trendBadge.textContent = '↓ Declining';
+                trendBadge.className = 'text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full';
+            }
+            
+            const avgMarks = data.recent_performance.reduce((sum, p) => sum + p.latest_marks, 0) / data.recent_performance.length;
+            document.getElementById('avgMarks').textContent = `${avgMarks.toFixed(1)}/20`;
+            document.getElementById('subjectCount').textContent = data.recent_performance.length;
+            
+            // Risk factors
+            const factorsHTML = data.top_contributing_factors.map(f => {
+                const percentage = Math.round(f.importance * 100);
+                return `
+                    <div class="flex items-center">
+                        <div class="flex-1">
+                            <div class="flex justify-between mb-1">
+                                <span class="text-sm font-medium text-gray-700">${formatFeatureName(f.feature)}</span>
+                                <span class="text-sm text-gray-600">${percentage}%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-blue-600 h-2 rounded-full" style="width: ${percentage}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('riskFactors').innerHTML = factorsHTML;
+            
+            // Future course risks
+            if (data.future_course_risks.length > 0) {
+                const coursesHTML = data.future_course_risks.map(c => {
+                    const riskPct = Math.round(c.risk * 100);
+                    return `
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div class="flex items-center">
+                                <i class="fas fa-book text-orange-500 mr-3"></i>
+                                <span class="font-medium text-gray-800">${c.course}</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="text-sm text-gray-600 mr-2">${riskPct}% risk</span>
+                                <div class="w-24 bg-gray-200 rounded-full h-2">
+                                    <div class="bg-orange-500 h-2 rounded-full" style="width: ${riskPct}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                document.getElementById('futureCourseRisks').innerHTML = coursesHTML;
+            } else {
+                document.getElementById('futureCourseRisks').innerHTML = '<p class="text-gray-600">No significant future course risks detected</p>';
+            }
+            
+            // Charts
+            renderCharts(data);
+        }
+        
+        function renderCharts(data) {
+            // Destroy existing chart instances to prevent canvas reuse errors
+            if (attendanceChartInstance) {
+                try {
+                    attendanceChartInstance.destroy();
+                } catch (e) {
+                    console.log('Chart destroy error:', e);
+                }
+                attendanceChartInstance = null;
+            }
+            if (performanceChartInstance) {
+                try {
+                    performanceChartInstance.destroy();
+                } catch (e) {
+                    console.log('Chart destroy error:', e);
+                }
+                performanceChartInstance = null;
+            }
+            
+            // Attendance trend chart
+            const ctx1 = document.getElementById('attendanceChart').getContext('2d');
+            attendanceChartInstance = new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: data.recent_attendance.map((_, i) => `Week ${i + 1}`),
+                    datasets: [{
+                        label: 'Attendance %',
+                        data: data.recent_attendance,
+                        borderColor: 'rgb(59, 130, 246)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, max: 100 }
+                    }
+                }
+            });
+            
+            // Performance chart
+            const ctx2 = document.getElementById('performanceChart').getContext('2d');
+            performanceChartInstance = new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: data.recent_performance.map(p => p.subject),
+                    datasets: [{
+                        label: 'Marks',
+                        data: data.recent_performance.map(p => p.latest_marks),
+                        backgroundColor: 'rgba(168, 85, 247, 0.7)',
+                        borderColor: 'rgb(168, 85, 247)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, max: 20 }
+                    }
+                }
+            });
+        }
+        
+        function formatFeatureName(name) {
+            return name.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        }
+        
+        function refreshData() {
+            // Find the button that was clicked
+            const buttons = document.querySelectorAll('button');
+            let btn = null;
+            for (let button of buttons) {
+                if (button.innerHTML.includes('Loading New Student') || button.innerHTML.includes('Try Different Student') || button.innerHTML.includes('New Student')) {
+                    btn = button;
+                    break;
+                }
+            }
+            
+            if (btn) {
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Loading...';
+                btn.disabled = true;
+                
+                // Reload the dashboard with fresh data
+                loadDashboard().finally(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.disabled = false;
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            } else {
+                // If button not found, just reload
+                loadDashboard();
+            }
+        }
+        
+        function logout() {
+            localStorage.removeItem('demoUser');
+            window.location.href = '../auth/login.html';
+        }
+        
+        // Load dashboard on page load
+        loadDashboard();
+    </script>
+    
+</body>
+</html>

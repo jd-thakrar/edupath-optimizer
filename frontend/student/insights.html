@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Insights - EduPath Optimizer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        .gradient-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    </style>
+</head>
+<body class="bg-gray-50">
+    
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <i class="fas fa-brain text-blue-600 text-2xl mr-3"></i>
+                    <span class="text-xl font-bold text-gray-800">EduPath Optimizer</span>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <a href="dashboard.html" class="text-gray-700 hover:text-blue-600">Dashboard</a>
+                    <a href="insights.html" class="text-blue-600 font-medium">AI Insights</a>
+                    <button onclick="refreshData()" class="text-gray-700 hover:text-green-600 transition">
+                        <i class="fas fa-sync-alt mr-2"></i>New Student
+                    </button>
+                    <button onclick="logout()" class="text-gray-700 hover:text-red-600">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Success Notification -->
+        <div id="successNotification" style="display:none;" class="mb-6 bg-green-50 border border-green-200 rounded-lg p-4 flex items-center justify-between animate-pulse">
+            <div class="flex items-center">
+                <i class="fas fa-check-circle text-green-600 text-xl mr-3"></i>
+                <span class="text-green-800 font-medium" id="notificationText"></span>
+            </div>
+            <button onclick="document.getElementById('successNotification').style.display='none'" class="text-green-600 hover:text-green-800">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">AI-Powered Recommendations</h1>
+            <p class="text-gray-600">Counterfactual analysis: What actions will reduce your failure risk?</p>
+        </div>
+        
+        <!-- Current Risk Overview -->
+        <div class="gradient-card rounded-2xl shadow-xl p-8 mb-8 text-white">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h2 class="text-2xl font-bold mb-2">Your Current Situation</h2>
+                    <p class="text-blue-100">Analyzing: <span id="studentName" class="font-semibold">Loading...</span> <span id="studentArchetype" class="ml-2 text-xs px-2 py-1 bg-white bg-opacity-20 rounded-full"></span></p>
+                </div>
+                <div class="hidden md:block">
+                    <i class="fas fa-lightbulb text-8xl opacity-20"></i>
+                </div>
+            </div>
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-blue-100 mb-4">Based on probabilistic ML analysis</p>
+                    <div class="flex items-center space-x-6">
+                        <div>
+                            <div class="text-4xl font-bold" id="currentRisk">--</div>
+                            <div class="text-sm text-blue-100">Failure Risk</div>
+                        </div>
+                        <div class="text-3xl">→</div>
+                        <div>
+                            <div class="text-4xl font-bold text-green-300" id="targetRisk">--</div>
+                            <div class="text-sm text-green-100">After Intervention</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recommended Interventions -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">Recommended Interventions</h2>
+            <p class="text-gray-600 mb-6">Ranked by effectiveness score (risk reduction per effort unit)</p>
+            
+            <div id="interventions" class="space-y-6">
+                <div class="animate-pulse bg-white rounded-xl shadow-lg p-6">
+                    <div class="h-4 bg-gray-200 rounded w-3/4 mb-4"></div>
+                    <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Minimal Safe Path -->
+        <div class="bg-green-50 border-2 border-green-200 rounded-xl p-6 mb-8">
+            <div class="flex items-start">
+                <i class="fas fa-route text-green-600 text-3xl mr-4 mt-1"></i>
+                <div class="flex-1">
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Minimum Path to Safety</h3>
+                    <div id="safePath" class="text-gray-700">
+                        <p class="animate-pulse">Calculating minimal intervention path...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Simulation Playground -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <h3 class="text-xl font-bold text-gray-900 mb-4">Simulation Playground</h3>
+            <p class="text-gray-600 mb-6">Explore "what-if" scenarios by adjusting parameters</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Attendance Improvement
+                    </label>
+                    <input type="range" id="attendanceSlider" min="0" max="20" value="0" 
+                           class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                           onchange="updateSimulation()">
+                    <div class="flex justify-between text-sm text-gray-600 mt-1">
+                        <span>Current</span>
+                        <span id="attendanceValue" class="font-semibold">+0%</span>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Marks Improvement
+                    </label>
+                    <input type="range" id="marksSlider" min="0" max="10" value="0" 
+                           class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                           onchange="updateSimulation()">
+                    <div class="flex justify-between text-sm text-gray-600 mt-1">
+                        <span>Current</span>
+                        <span id="marksValue" class="font-semibold">+0 marks</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="text-sm text-gray-600">Simulated New Risk</div>
+                        <div class="text-2xl font-bold text-blue-600" id="simulatedRisk">--</div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-gray-600">Risk Reduction</div>
+                        <div class="text-2xl font-bold text-green-600" id="riskReduction">--</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Understanding AI Reasoning -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <h3 class="text-xl font-bold text-gray-900 mb-4">Understanding the AI</h3>
+            
+            <div class="space-y-4">
+                <div class="border-l-4 border-blue-500 pl-4">
+                    <h4 class="font-semibold text-gray-900 mb-1">How Predictions Work</h4>
+                    <p class="text-gray-600">
+                        The system uses Gradient Boosting ML to learn patterns from historical data. 
+                        It analyzes 22 features including attendance trends, performance trajectories, 
+                        engagement scores, and temporal patterns—not just current values.
+                    </p>
+                </div>
+                
+                <div class="border-l-4 border-purple-500 pl-4">
+                    <h4 class="font-semibold text-gray-900 mb-1">Counterfactual Reasoning</h4>
+                    <p class="text-gray-600">
+                        Recommendations use counterfactual simulation: the model simulates alternative 
+                        futures where you take different actions, then ranks interventions by 
+                        effectiveness score (risk reduction ÷ effort required).
+                    </p>
+                </div>
+                
+                <div class="border-l-4 border-green-500 pl-4">
+                    <h4 class="font-semibold text-gray-900 mb-1">Confidence Scores</h4>
+                    <p class="text-gray-600">
+                        Confidence indicates how certain the model is. Higher confidence (closer to 1.0) 
+                        means clearer patterns. Lower confidence suggests more uncertainty—possibly due 
+                        to incomplete data or unusual patterns.
+                    </p>
+                </div>
+                
+                <div class="border-l-4 border-yellow-500 pl-4">
+                    <h4 class="font-semibold text-gray-900 mb-1">No Hardcoded Rules</h4>
+                    <p class="text-gray-600">
+                        Unlike traditional systems, there are NO fixed thresholds like "attendance < 75% = fail". 
+                        The model learns what matters from patterns. A declining trend at 80% might be riskier 
+                        than stable 70%.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <script>
+        const API_BASE_URL = 'http://localhost:5000/api';
+        
+        // Demo interventions data
+        const demoInterventions = {
+            current_risk: 0.38,
+            recommended_interventions: [
+                {
+                    action: 'Improve Attendance',
+                    description: 'Attend 15% more classes consistently',
+                    current_risk: 0.38,
+                    predicted_risk: 0.22,
+                    risk_reduction: 0.16,
+                    risk_reduction_percent: 16.0,
+                    effort_level: 2,
+                    effectiveness_score: 0.08,
+                    confidence: 0.84,
+                    ai_explanation: 'Your attendance trend shows a consistent decline over the past 4 weeks. By stabilizing and improving attendance by just 15%, you can dramatically reduce failure risk. This intervention offers the best risk-to-effort ratio because attendance is a leading indicator that influences both comprehension and engagement. The model predicts a 16% absolute risk reduction with moderate effort (2/5).'
+                },
+                {
+                    action: 'Boost Internal Marks',
+                    description: 'Improve test scores by 6 marks on average',
+                    current_risk: 0.38,
+                    predicted_risk: 0.26,
+                    risk_reduction: 0.12,
+                    risk_reduction_percent: 12.0,
+                    effort_level: 3,
+                    effectiveness_score: 0.04,
+                    confidence: 0.80,
+                    ai_explanation: 'Your recent test performance shows volatility with a slight downward trend. Focusing on consistent improvement across subjects—particularly in weaker areas—can substantially reduce risk. Target a 6-mark improvement through focused revision and practice. This requires more effort (3/5) but offers significant risk reduction. Prioritize subjects showing declining trends.'
+                },
+                {
+                    action: 'Stabilize Performance',
+                    description: 'Reduce performance volatility and maintain consistency',
+                    current_risk: 0.38,
+                    predicted_risk: 0.29,
+                    risk_reduction: 0.09,
+                    risk_reduction_percent: 9.0,
+                    effort_level: 2,
+                    effectiveness_score: 0.045,
+                    confidence: 0.78,
+                    ai_explanation: 'High performance volatility indicates inconsistent study patterns or topic-specific weaknesses. By stabilizing your performance—achieving similar marks across tests rather than peaks and valleys—you reduce unpredictability in outcomes. This suggests building stronger fundamentals and consistent preparation habits. The model values consistency as a strong predictor of success.'
+                }
+            ],
+            minimal_safe_path: {
+                status: 'solution_found',
+                path: [{
+                    action: 'Improve Attendance',
+                    predicted_risk: 0.22
+                }],
+                final_risk: 0.22,
+                total_effort: 2
+            }
+        };
+        
+        let currentData = null;
+        
+        async function loadInterventions() {
+            try {
+                // Check if we have a current student from dashboard
+                const currentStudent = sessionStorage.getItem('currentStudent');
+                let studentData = { random: true };
+                
+                if (currentStudent) {
+                    const student = JSON.parse(currentStudent);
+                    console.log('🔗 Using student from dashboard:', student.id, student.name);
+                    studentData = { student_id: student.id };
+                } else {
+                    console.log('🔄 Requesting interventions for random student...');
+                }
+                
+                const response = await fetch(`${API_BASE_URL}/student/interventions?t=${Date.now()}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(studentData)
+                });
+                
+                if (!response.ok) {
+                    throw new Error('API request failed');
+                }
+                
+                const data = await response.json();
+                console.log('✅ Received interventions');
+                currentData = data;
+                
+                updateUI(data);
+            } catch (error) {
+                console.error('Error loading interventions:', error);
+                console.log('Falling back to demo data');
+                currentData = demoInterventions;
+                updateUI(demoInterventions);
+            }
+        }
+        
+        function updateUI(data) {
+            // Student info
+            if (data.student_name) {
+                document.getElementById('studentName').textContent = data.student_name;
+            }
+            if (data.archetype) {
+                const badge = document.getElementById('studentArchetype');
+                badge.textContent = data.archetype.toUpperCase();
+            }
+            
+            // Show notification with consistency indicator
+            if (data.student_name) {
+                const currentStudent = sessionStorage.getItem('currentStudent');
+                const isConsistent = currentStudent && JSON.parse(currentStudent).id === data.student_id;
+                const prefix = isConsistent ? '🔗 Same student from dashboard: ' : 'Now analyzing: ';
+                showNotification(prefix + `${data.student_name} (${data.student_id})`);
+            }
+            
+            // Current risk
+            const currentRiskPct = Math.round(data.current_risk * 100);
+            document.getElementById('currentRisk').textContent = `${currentRiskPct}%`;
+            
+            // Target risk (best intervention)
+            if (data.recommended_interventions.length > 0) {
+                const bestIntervention = data.recommended_interventions[0];
+                const targetRiskPct = Math.round(bestIntervention.predicted_risk * 100);
+                document.getElementById('targetRisk').textContent = `${targetRiskPct}%`;
+            }
+            
+            // Render interventions
+            const interventionsHTML = data.recommended_interventions.map((intervention, index) => {
+                const rank = index + 1;
+                const stars = '⭐'.repeat(intervention.effort_level);
+                
+                return `
+                    <div class="bg-white rounded-xl shadow-lg p-6 border-2 ${index === 0 ? 'border-blue-500' : 'border-gray-200'}">
+                        ${index === 0 ? '<div class="inline-block bg-blue-500 text-white text-xs px-2 py-1 rounded-full mb-3">MOST EFFECTIVE</div>' : ''}
+                        
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <div class="flex items-center mb-2">
+                                    <span class="bg-blue-100 text-blue-700 w-8 h-8 rounded-full flex items-center justify-center font-bold mr-3">${rank}</span>
+                                    <h3 class="text-xl font-bold text-gray-900">${intervention.action}</h3>
+                                </div>
+                                <p class="text-gray-700 text-lg">${intervention.description}</p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-2xl font-bold text-green-600">↓${intervention.risk_reduction_percent}%</div>
+                                <div class="text-sm text-gray-600">Risk Reduction</div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-4 gap-4 mb-4 p-4 bg-gray-50 rounded-lg">
+                            <div>
+                                <div class="text-sm text-gray-600">Current Risk</div>
+                                <div class="text-lg font-bold text-gray-900">${Math.round(intervention.current_risk * 100)}%</div>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-600">New Risk</div>
+                                <div class="text-lg font-bold text-green-600">${Math.round(intervention.predicted_risk * 100)}%</div>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-600">Effort</div>
+                                <div class="text-lg">${stars}</div>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-600">Effectiveness</div>
+                                <div class="text-lg font-bold text-blue-600">${intervention.effectiveness_score.toFixed(3)}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-purple-50 border-l-4 border-purple-500 p-4 rounded">
+                            <div class="flex items-start">
+                                <i class="fas fa-robot text-purple-600 mr-3 mt-1"></i>
+                                <div>
+                                    <h4 class="font-semibold text-gray-900 mb-1">AI Explanation</h4>
+                                    <p class="text-gray-700">${intervention.ai_explanation}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            document.getElementById('interventions').innerHTML = interventionsHTML;
+            
+            // Minimal safe path
+            if (data.minimal_safe_path.status === 'solution_found') {
+                const path = data.minimal_safe_path;
+                document.getElementById('safePath').innerHTML = `
+                    <p class="text-gray-700 mb-3">
+                        <strong>Single intervention sufficient:</strong> ${path.path[0].action}
+                    </p>
+                    <div class="flex items-center space-x-4 bg-white rounded-lg p-4">
+                        <div>
+                            <div class="text-sm text-gray-600">Final Risk</div>
+                            <div class="text-2xl font-bold text-green-600">${Math.round(path.final_risk * 100)}%</div>
+                        </div>
+                        <div>
+                            <div class="text-sm text-gray-600">Total Effort</div>
+                            <div class="text-2xl font-bold text-gray-900">${path.total_effort}/5</div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="text-sm text-gray-600 mb-1">Progress to Safety</div>
+                            <div class="w-full bg-gray-200 rounded-full h-3">
+                                <div class="bg-green-500 h-3 rounded-full" style="width: ${100 - path.final_risk * 100}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        function updateSimulation() {
+            const attendanceValue = document.getElementById('attendanceSlider').value;
+            const marksValue = document.getElementById('marksSlider').value;
+            
+            document.getElementById('attendanceValue').textContent = `+${attendanceValue}%`;
+            document.getElementById('marksValue').textContent = `+${marksValue} marks`;
+            
+            // Simple simulation (in production, call API)
+            const currentRisk = currentData.current_risk;
+            const attendanceImpact = attendanceValue * 0.008;
+            const marksImpact = marksValue * 0.01;
+            
+            const newRisk = Math.max(0, currentRisk - attendanceImpact - marksImpact);
+            const reduction = currentRisk - newRisk;
+            
+            document.getElementById('simulatedRisk').textContent = `${Math.round(newRisk * 100)}%`;
+            document.getElementById('riskReduction').textContent = `↓${Math.round(reduction * 100)}%`;
+        }
+        
+        function showNotification(message) {
+            const notification = document.getElementById('successNotification');
+            const notificationText = document.getElementById('notificationText');
+            notificationText.textContent = message;
+            notification.style.display = 'flex';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 4000);
+        }
+        
+        function refreshData() {
+            // Show loading animation
+            const btn = event.target.closest('button');
+            if (btn) {
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Loading...';
+                btn.disabled = true;
+                
+                // Reload interventions with fresh data
+                loadInterventions().then(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.disabled = false;
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            } else {
+                // If called from somewhere else, just reload
+                loadInterventions();
+            }
+        }
+        
+        function logout() {
+            localStorage.removeItem('demoUser');
+            window.location.href = '../auth/login.html';
+        }
+        
+        // Load interventions on page load
+        loadInterventions();
+    </script>
+    
+</body>
+</html>
