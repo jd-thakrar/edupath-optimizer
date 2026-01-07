@@ -3,7 +3,7 @@ Flask Application - Backend API for EduPath Optimizer
 Provides endpoints for risk prediction, counterfactual reasoning, and AI explanations
 """
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import firebase_admin
 from firebase_admin import credentials, firestore, auth
@@ -26,8 +26,8 @@ from ai_engine import (
 # Load environment variables
 load_dotenv()
 
-# Initialize Flask app
-app = Flask(__name__)
+# Initialize Flask app with static folder pointing to frontend
+app = Flask(__name__, static_folder='../frontend', static_url_path='')
 CORS(app)
 
 # Load sample students data
@@ -95,6 +95,21 @@ def require_auth(role=None):
         wrapper.__name__ = f.__name__
         return wrapper
     return decorator
+
+
+# ============================================================================
+# STATIC FILE SERVING
+# ============================================================================
+
+@app.route('/')
+def index():
+    """Serve index.html as the home page"""
+    return send_from_directory(app.static_folder, 'index.html')
+
+@app.route('/<path:path>')
+def serve_static(path):
+    """Serve all other static files"""
+    return send_from_directory(app.static_folder, path)
 
 
 # ============================================================================
