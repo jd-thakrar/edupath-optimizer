@@ -1,3 +1,3 @@
 #!/bin/bash
-# Force pip to use pre-built wheels only (no compilation)
-pip install --only-binary :all: -r requirements.txt
+# Install packages allowing pip to resolve dependencies
+pip install -r requirements.txt
