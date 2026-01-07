@@ -559,7 +559,7 @@ def internal_error(error):
 # ============================================================================
 
 if __name__ == '__main__':
-    port = int(os.getenv('PORT', 5000))
+    port = int(os.getenv('PORT', 10000))
     debug = os.getenv('FLASK_ENV') == 'development'
     
     print("\n" + "=" * 60)
