@@ -6,6 +6,57 @@ A TRUE artificial intelligence system that predicts student failure risk using p
 
 ---
 
+## 🌍 Open Source Readiness
+
+This project is OSS-ready with core governance and contribution documents:
+- [LICENSE](LICENSE) (MIT)
+- [CONTRIBUTING.md](CONTRIBUTING.md)
+- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
+- [SECURITY.md](SECURITY.md)
+- [GOVERNANCE.md](GOVERNANCE.md)
+
+If you are new here, start with the quick start below, then open a scoped issue or PR.
+
+---
+
+## ⚡ Quick Start (Contributors)
+
+```bash
+git clone <repository-url>
+cd edupath-optimizer
+
+cd backend
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+pip install -r ../requirements.txt
+cp .env.example .env
+
+# Do not commit secrets in .env or credential files.
+python -m compileall .
+python app.py
+```
+
+Frontend local preview:
+```bash
+python -m http.server 8000 --directory frontend
+```
+
+---
+
+## 🧭 Where to Start Contributing
+
+- **AI/ML logic:** `backend/ai_engine/`
+- **Backend APIs:** `backend/app.py`
+- **Training pipeline:** `backend/train_model.py`
+- **Frontend pages:** `frontend/student/`, `frontend/admin/`
+
+Recommended first contributions:
+- docs and setup clarity
+- small bug fixes
+- tests for backend modules
+
+---
+
 ## 🎯 Problem Statement
 
 Universities collect attendance and internal marks, yet students fail. Why?
@@ -176,7 +227,7 @@ Answers: *"What minimal action reduces failure risk the most?"*
 ### 1. Clone Repository
 ```bash
 git clone <repository-url>
-cd EDU
+cd edupath-optimizer
 ```
 
 ### 2. Backend Setup
@@ -458,7 +509,7 @@ Gemini translates model outputs to natural language.
 
 ## 📝 License
 
-MIT License - See LICENSE file
+Licensed under the MIT License. You can use, modify, and distribute this project under the terms in [LICENSE](LICENSE).
 
 ---
 
@@ -495,6 +546,9 @@ For questions about the AI logic or deployment:
 - Review code comments in `backend/ai_engine/`
 - Check API documentation above
 - Examine synthetic data generation in `backend/train_model.py`
+
+For security issues, follow [SECURITY.md](SECURITY.md).  
+For community conduct expectations, see [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 
 ---
 

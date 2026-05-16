@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  backend-quality:
+    name: Backend quality checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Compile backend modules
+        run: python -m compileall backend
+
+      - name: Run backend tests if present
+        run: |
+          if find backend -type f -name "test*.py" | grep -q .; then
+            python -m unittest discover -s backend -p "test*.py"
+          else
+            echo "No backend tests found, skipping test execution."
+          fi
